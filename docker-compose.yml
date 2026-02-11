@@ -5,8 +5,6 @@ services:
     volumes:
       - "./pgrokd:/var/opt/pgrokd"
     ports:
-      - "3320:3320"
-      - "3000:3000"
       - "2222:2222"
     depends_on:
       - postgres
@@ -20,6 +18,10 @@ services:
       POSTGRES_DB: pgrokd
       POSTGRES_USER: "${POSTGRES_USER}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
-
+    networks:
+      - dokploy-network
 volumes:
-  pg_data:
+  pg_data:null
+networks:
+  dokploy-network:
+    external: true
