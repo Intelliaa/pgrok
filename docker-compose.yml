@@ -11,17 +11,34 @@ services:
     entrypoint: ["/bin/sh", "-c"]
     command:
       - |
-        echo "=== /home ==="
-        ls -laR /home/
-        echo "=== /sbin ==="
-        ls /sbin/
-        echo "=== /usr/local/bin ==="
-        ls /usr/local/bin/ 2>/dev/null
-        echo "=== /usr/bin ==="
-        ls /usr/bin/
-        echo "=== find pgrok ==="
-        find / -name "*pgrok*" 2>/dev/null
-        sleep 3600
+        cat > /tmp/pgrokd.yml <<EOF
+        external_url: "https://tunnel.codetrain.cloud"
+        web:
+          port: 3320
+        proxy:
+          port: 3000
+          scheme: "https"
+          domain: "tunnel.codetrain.cloud"
+        sshd:
+          port: 2222
+        database:
+          host: "postgres"
+          port: 5432
+          user: "${POSTGRES_USER}"
+          password: "${POSTGRES_PASSWORD}"
+          database: "pgrokd"
+        identity_provider:
+          type: "oidc"
+          display_name: "Google"
+          issuer: "https://accounts.google.com"
+          client_id: "${OIDC_CLIENT_ID}"
+          client_secret: "${OIDC_CLIENT_SECRET}"
+          field_mapping:
+            identifier: "email"
+            display_name: "name"
+            email: "email"
+        EOF
+        exec /app/pgrokd/pgrokd --config /tmp/pgrokd.yml
   postgres:
     image: postgres
     restart: always
