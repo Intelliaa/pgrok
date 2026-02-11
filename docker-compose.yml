@@ -4,11 +4,10 @@ services:
     restart: always
     ports:
       - "2222:2222"
-    depends_on:
-      - postgres
     networks:
       - dokploy-network
-      - internal
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     entrypoint: ["/bin/sh", "-c"]
     command:
       - |
@@ -26,7 +25,7 @@ services:
         database:
           host: "pgrok-pgrok-ufygqh"
           port: 5432
-          user: "${POSTGRES_USER}"
+          user: "postgres"
           password: "${POSTGRES_PASSWORD}"
           database: "pgrokdb"
         identity_provider:
@@ -41,22 +40,20 @@ services:
             email: "email"
         EOF
         exec /app/pgrokd/pgrokd --config /tmp/pgrokd.yml
-  postgres:
-    image: postgres:16
-    restart: always
-    volumes:
-      - "pg_data_v2:/var/lib/postgresql/data"
-    environment:
-      POSTGRES_DB: pgrokdb
-      POSTGRES_USER: "${POSTGRES_USER}"
-      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
-    networks:
-      - dokploy-network
-      - internal
-volumes:
-  pg_data_v2:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pgrok-web.rule=Host(`tunnel.codetrain.cloud`)"
+      - "traefik.http.routers.pgrok-web.entrypoints=websecure"
+      - "traefik.http.routers.pgrok-web.tls.certResolver=letsencrypt"
+      - "traefik.http.routers.pgrok-web.service=pgrok-web"
+      - "traefik.http.services.pgrok-web.loadbalancer.server.port=3320"
+      - "traefik.http.routers.pgrok-proxy.rule=HostRegexp(`{subdomain:[a-z0-9]+}.tunnel.codetrain.cloud`)"
+      - "traefik.http.routers.pgrok-proxy.entrypoints=websecure"
+      - "traefik.http.routers.pgrok-proxy.tls.certResolver=letsencrypt"
+      - "traefik.http.routers.pgrok-proxy.service=pgrok-proxy"
+      - "traefik.http.services.pgrok-proxy.loadbalancer.server.port=3000"
+      - "traefik.http.routers.pgrok-proxy.priority=1"
+      - "traefik.http.routers.pgrok-web.priority=2"
 networks:
   dokploy-network:
     external: true
-  internal:
-    driver: bridge
