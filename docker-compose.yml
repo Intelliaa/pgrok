@@ -23,11 +23,11 @@ services:
         sshd:
           port: 2222
         database:
-          host: "postgres"
+          host: "pgrok-pgrok-ufygqh"
           port: 5432
           user: "${POSTGRES_USER}"
           password: "${POSTGRES_PASSWORD}"
-          database: "pgrokd"
+          database: "pgrokdb"
         identity_provider:
           type: "oidc"
           display_name: "Google"
