@@ -8,6 +8,7 @@ services:
       - postgres
     networks:
       - dokploy-network
+      - internal
     entrypoint: ["/bin/sh", "-c"]
     command:
       - |
@@ -50,8 +51,11 @@ services:
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
     networks:
       - dokploy-network
+      - internal
 volumes:
   pg_data:
 networks:
   dokploy-network:
     external: true
+  internal:
+    driver: bridge
