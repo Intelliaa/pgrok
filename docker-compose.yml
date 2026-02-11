@@ -2,13 +2,12 @@ services:
   pgrokd:
     image: "ghcr.io/pgrok/pgrokd:latest"
     restart: always
-    volumes:
-      - "./pgrokd:/var/opt/pgrokd"
     ports:
       - "2222:2222"
     depends_on:
       - postgres
-
+    networks:
+      - dokploy-network
   postgres:
     image: postgres
     restart: always
