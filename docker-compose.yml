@@ -23,7 +23,7 @@ services:
         sshd:
           port: 2222
         database:
-          host: "pgrok-pgrok-ufygqh"
+          host: "host.docker.internal"
           port: 5432
           user: "postgres"
           password: "${POSTGRES_PASSWORD}"
