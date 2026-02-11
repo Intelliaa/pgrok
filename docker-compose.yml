@@ -21,7 +21,7 @@ services:
     networks:
       - dokploy-network
 volumes:
-  pg_data:null
+  pg_data:
 networks:
   dokploy-network:
     external: true
