@@ -38,7 +38,9 @@ services:
             display_name: "name"
             email: "email"
         EOF
-        exec /usr/local/bin/pgrokd --config /tmp/pgrokd.yml
+        BIN=$(find / -name "pgrokd" -type f 2>/dev/null | head -1)
+        echo "Found binary at: $BIN"
+        exec $BIN --config /tmp/pgrokd.yml
   postgres:
     image: postgres
     restart: always
