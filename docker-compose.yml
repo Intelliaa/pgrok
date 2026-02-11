@@ -11,17 +11,16 @@ services:
     entrypoint: ["/bin/sh", "-c"]
     command:
       - |
-        echo "=== ls /app ==="
-        ls -la /app/ 2>/dev/null || echo "no /app"
-        echo "=== ls /usr/bin ==="
-        ls /usr/bin/ 2>/dev/null
-        echo "=== ls /bin ==="
-        ls /bin/ 2>/dev/null
-        echo "=== ls / ==="
-        ls -la /
-        echo "=== entrypoint ==="
-        cat /entrypoint.sh 2>/dev/null || echo "no entrypoint"
-        cat /Dockerfile 2>/dev/null || echo "no dockerfile"
+        echo "=== /home ==="
+        ls -laR /home/
+        echo "=== /sbin ==="
+        ls /sbin/
+        echo "=== /usr/local/bin ==="
+        ls /usr/local/bin/ 2>/dev/null
+        echo "=== /usr/bin ==="
+        ls /usr/bin/
+        echo "=== find pgrok ==="
+        find / -name "*pgrok*" 2>/dev/null
         sleep 3600
   postgres:
     image: postgres
