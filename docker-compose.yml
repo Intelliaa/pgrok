@@ -11,8 +11,7 @@ services:
     entrypoint: ["/bin/sh", "-c"]
     command:
       - |
-        mkdir -p /var/opt/pgrokd
-        cat > /var/opt/pgrokd/pgrokd.yml <<EOF
+        cat > /tmp/pgrokd.yml <<EOF
         external_url: "https://tunnel.codetrain.cloud"
         web:
           port: 3320
@@ -39,7 +38,7 @@ services:
             display_name: "name"
             email: "email"
         EOF
-        exec pgrokd --config /var/opt/pgrokd/pgrokd.yml
+        exec /usr/local/bin/pgrokd --config /tmp/pgrokd.yml
   postgres:
     image: postgres
     restart: always
